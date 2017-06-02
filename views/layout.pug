@@ -1,0 +1,59 @@
+doctype html
+html
+	head
+		title Mean App
+		link(rel='stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.css')
+		link(rel='stylesheet' href='/css/main.css')
+	body
+		nav.navbar.navbar-toggleable-md.navbar-light.bg-faded.mb-3
+			button.navbar-toggler.navbar-toggler-right(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
+				span.navbar-toggler-icon
+			a.navbar-brand(href='/') App1
+			#navbarSupportedContent.collapse.navbar-collapse
+				if loggedUser
+					ul.navbar-nav.mr-auto
+						li.nav-item
+							a.nav-link(href='/shouts')
+								| Latest shouts 
+								span.sr-only (current)
+						li.nav-item
+							a.nav-link(href='/users')
+								| Show users 
+								span.sr-only (current)
+				
+				ul.navbar-nav.navbar-right
+					if loggedUser
+						li.nav-item
+							a.nav-link(href='/profile') Profile
+						li.nav-item
+							a.nav-link(href='/logout') Logout
+					else
+						li.nav-item
+							a.nav-link(href='/login')
+								| Login
+								span.sr-only (current)
+						li.nav-item
+							a.nav-link(href='/register') Register
+
+		.container
+			!= messages('message', locals)
+			if errors
+				each error, i in errors
+					div(class="alert alert-danger") #{error.msg}
+
+			block content
+			br
+			br
+			footer
+				if loggedUser
+					p Logged user: #{loggedUser.username}<br>
+						small Session expires in #{expiresIn}
+				else
+					p Copyright &copy; 2017
+					
+
+		script(src='/bower_components/jquery/dist/jquery.js')
+		script(src='/bower_components/tether/dist/js/tether.js')
+		script(src='/bower_components/bootstrap/dist/js/bootstrap.js')
+
+		script(src='/js/main.js')

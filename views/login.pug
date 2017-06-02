@@ -1,0 +1,12 @@
+extends layout
+
+block content
+	h1 #{title}
+	form(method='post', action='/login')
+		#form-group
+			label(for='form-login') Login:
+			input.form-control(id='form-login', name='username', type='text')
+		#form-group
+			label(for='form-password') Password:
+			input.form-control(id='form-password', name='password', type='password')
+		input.btn.btn-primary.my-4(type='submit', value='Submit')

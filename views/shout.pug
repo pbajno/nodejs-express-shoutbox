@@ -1,0 +1,12 @@
+extends layout
+
+block content
+	h1 #{title}
+	p #{shout.body}
+
+	small Written by #{author} on 
+		=moment(shout.date).format('DD.MM.YYYY')
+	hr
+	if loggedUser
+		if loggedUser.id==shout.user
+			a.btn.btn-danger.delete-shout(href='#', data-id=shout._id) Delete

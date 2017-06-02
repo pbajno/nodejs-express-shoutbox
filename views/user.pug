@@ -1,0 +1,17 @@
+extends layout
+
+block content
+	h1 User details
+	p Name: #{user.name}
+	p Username: #{user.username}
+	p Email: #{user.email}
+	p City: #{user.city}
+	if shouts
+		h2 Latest shouts
+		ul.list-group
+			each shout, i in shouts
+				li.list-group-item
+					a(href="/shout/"+shout._id)=shout.body
+					span
+						small &nbsp; 
+							=moment(shout.date).format('DD.MM.YYYY')

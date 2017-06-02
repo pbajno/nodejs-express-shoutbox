@@ -1,0 +1,31 @@
+extends layout
+
+block content
+	if loggedUser
+		h1 #{title}
+		form(method='post', action='/shout/add')
+			#form-group
+				label(for='form-body') Body:
+				textarea.form-control(id='form-body', name='body', type='text')
+			input.btn.btn-primary.my-4(type='submit', value='Submit')
+	
+		h2 Latest shouts
+		ul.list-group
+			if shouts
+				each shout, i in shouts
+					li.list-group-item
+						a(href="/shout/"+shout._id)=shout.body
+						span
+							small &nbsp; 
+								=moment(shout.date).format('DD.MM.YYYY')
+	else
+		.jumbotron
+			h1.display-3 Hi there!
+			p.lead
+				| This app is unfortunately available only to logged users. Login and use it !
+			hr.my-4
+			p
+				| It uses utility classes for typography and spacing to space content out within the larger container.
+			p.lead
+				a.btn.btn-primary.btn-lg(href='/login', role='button') Login
+

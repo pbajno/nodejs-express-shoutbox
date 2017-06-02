@@ -1,0 +1,25 @@
+extends layout
+
+block content
+	h1 #{title}
+	form(method='post', action='/profile')
+		#form-group
+			label(for='form-name') Name:
+			input.form-control(id='form-name', name='name', type='text', value=user.name)
+		#form-group
+			label(for='form-username') Login:
+			input.form-control(id='form-username', name='username', type='text', value=user.username, disabled)
+		#form-group
+			label(for='form-email') Email:
+			input.form-control(id='form-email', name='email', type='text', value=user.email)
+		#form-group
+			label(for='form-password') Password:
+			input.form-control(id='form-password', name='password', type='password')
+		#form-group
+			label(for='form-password2') Confirm Password:
+			input.form-control(id='form-password2', name='password2', type='password')
+		#form-group
+			label(for='form-city') City:
+			input.form-control(id='form-city', name='city', type='text', value=user.city)
+		input.btn.btn-primary.my-4(type='submit', value='Submit')
+
