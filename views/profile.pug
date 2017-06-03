@@ -2,7 +2,10 @@ extends layout
 
 block content
 	h1 #{title}
-	form(method='post', action='/profile')
+	p 
+		a(href='/profile/avatar') Change profile avatar
+
+	form(method='post', action='/profile', enctype='multipart/form-data')
 		#form-group
 			label(for='form-name') Name:
 			input.form-control(id='form-name', name='name', type='text', value=user.name)
@@ -22,4 +25,3 @@ block content
 			label(for='form-city') City:
 			input.form-control(id='form-city', name='city', type='text', value=user.city)
 		input.btn.btn-primary.my-4(type='submit', value='Submit')
-

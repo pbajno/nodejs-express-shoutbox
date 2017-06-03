@@ -5,4 +5,6 @@ block content
 	ul.list-group
 		each user, i in users
 			li.list-group-item
-				a(href="/user/"+user.username)=user.username
+				a(href="/user/"+user.username)
+					img(src='uploads/80/'+user.avatar, alt="Avatar", height='25', class='rounded')
+					=user.username

@@ -1,0 +1,16 @@
+extends layout
+
+block content
+	h1 #{title}
+	p 
+		a(href='/profile') Change profile data
+
+	form(method='post', action='/profile/avatar', enctype='multipart/form-data')
+		#form-group
+			label(for='form-avatar') Profile image:
+			input.form-control(id='form-avatar', name='avatar', type='file')
+		input.btn.btn-primary.my-4(type='submit', value='Submit')
+
+	if(loggedUser.avatar)
+		img(src='/uploads/'+loggedUser.avatar, alt='Avatar')
+		

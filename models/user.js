@@ -18,6 +18,10 @@ let userSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    avatar:{
+        type: String,
+        required: false
+    },
     city:{
         type: String,
         required: true

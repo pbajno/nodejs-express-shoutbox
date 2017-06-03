@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const multer  = require('multer');
+const path = require('path');
 
 // Bring in models
 let User = require('../models/user');
@@ -40,28 +42,77 @@ router.get('/user/:username', ensureAuthenticated, function(req, res){
     });
 });
 
-// Load Edit Form
-router.get('/edit/:id', ensureAuthenticated, function(req, res){
-  Article.findById(req.params.id, function(err, article){
-    if(article.author != req.user._id){
-      req.flash('danger', 'Not Authorized');
-      res.redirect('/');
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/uploads/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + new Date().getTime() + '.' + file.originalname.split('.')[file.originalname.split('.').length -1]);
     }
-    res.render('edit_article', {
-      title:'Edit Article',
-      article:article
+})
+
+var upload = multer({ storage: storage }).single('avatar');
+
+// require the image editing file
+var imageproc = path.resolve(__dirname, '../imageproc.js');
+
+function compressAndResize (imageUrl) {
+    // We need to spawn a child process so that we do not block 
+    // the EventLoop with cpu intensive image manipulation 
+    var childProcess = require('child_process').fork(imageproc);
+        childProcess.on('message', function(message) {
+        console.log(message);
     });
-  });
+    childProcess.on('error', function(error) {
+        console.error(error.stack)
+    });
+    childProcess.on('exit', function() {
+        console.log('process exited');
+    });
+    childProcess.send(imageUrl);
+}
+
+// Update User Avatar
+router.post('/profile/avatar', upload, ensureAuthenticated, function(req, res) {
+    console.log(res.locals.loggedUser);
+    let updatedUser = {};
+    updatedUser.avatar = req.file.filename;
+    let query = {_id:res.locals.loggedUser._id}
+
+    User.update(query, updatedUser, function(err){
+        if(err){
+            console.log(err);
+            return;
+        } else {
+            compressAndResize('public/uploads/'+req.file.filename);
+            req.flash('success', 'File upload sucessfully');
+            res.redirect('/profile/avatar');
+        }
+    });
 });
 
-// Update Submit POST Route
+// Show User Avatar
+router.get('/profile/avatar', ensureAuthenticated, function(req, res){
+    User.findOne({'_id': res.locals.loggedUser._id}, function(err, loggedUser){
+        if(err){
+            console.log(err);
+        } else {
+            res.render('profile_avatar', {
+                title: 'Profile avatar',
+                user: loggedUser
+            });
+        }
+    });
+});
+
+// Update User Profile
 router.post('/profile', ensureAuthenticated, function(req, res){
 
   let updatedUser = {};
   updatedUser.name = req.body.name;
   updatedUser.email = req.body.email;
   updatedUser.city = req.body.city;
-
+  
   let query = {_id:res.locals.loggedUser._id}
 
   User.update(query, updatedUser, function(err){
@@ -79,6 +130,7 @@ router.post('/profile', ensureAuthenticated, function(req, res){
 // User route
 router.get('/profile', ensureAuthenticated, function(req, res){
     User.findOne({'_id': res.locals.loggedUser._id}, function(err, loggedUser){
+        console.log(loggedUser);
         if(err){
             console.log(err);
         } else {
